@@ -3,6 +3,7 @@ package mobile.pageObjects;
 import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import mobile.Utils;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
@@ -53,8 +54,17 @@ public class VkvideoPage {
 //        $$(fastLoginView, playerContainer)
 //                .filter(visible)
 //                .shouldHave(CollectionCondition.sizeGreaterThan(0));
-        $("#fast_login_view, #playerContainer").shouldBe(visible);
-        if (fastLoginView.isDisplayed()) {
+//        $("#fast_login_view, #playerContainer").shouldBe(visible, DEFAULT_TIMEOUT);
+
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime < 30000) {
+            if (fastLoginViews.size() > 0 || playerContainers.size() > 0) { //вынести дублирование
+                break;
+            }
+            Utils.waitExactTime(1);
+        }
+
+        if (fastLoginViews.size() > 0) {
             fastLoginTertiaryBtn.click();
         }
         playerContainer.shouldBe(visible, DEFAULT_TIMEOUT);
