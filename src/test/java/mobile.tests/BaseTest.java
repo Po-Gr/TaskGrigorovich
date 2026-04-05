@@ -4,14 +4,12 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.appium.java_client.android.AndroidDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 
 import java.net.MalformedURLException;
 
 import static mobile.DriverManager.getAppiumDriver;
 import static mobile.Utils.*;
-import static mobile.Utils.ConnectionMode.OFF;
 import static mobile.Utils.ConnectionMode.ON;
 
 public class BaseTest {
@@ -27,16 +25,15 @@ public class BaseTest {
     }
 
     @AfterMethod(onlyForGroups = {"Vkvideo"}, alwaysRun = true)
-    public void closeVkvideo() throws InterruptedException, MalformedURLException {
+    public void closeVkvideo() throws MalformedURLException {
         getLogger().info("Завершение тестового приложения");
         getAppiumDriver().terminateApp("com.vk.vkvideo");
     }
 
     @AfterMethod(onlyForGroups = {"Network"}, alwaysRun = true)
-    public void turnConnection() throws InterruptedException, MalformedURLException {
+    public void turnConnection() throws MalformedURLException {
         turnNetworkConnection(ON);
     }
-
 
     @AfterSuite(alwaysRun = true)
     public void closeSession() {
