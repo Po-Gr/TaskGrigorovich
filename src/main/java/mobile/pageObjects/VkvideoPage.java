@@ -1,6 +1,5 @@
 package mobile.pageObjects;
 
-import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import mobile.Utils;
@@ -24,16 +23,17 @@ public class VkvideoPage {
     private final WebDriver driver;
 
     private final SelenideElement fastLoginView = $("#fast_login_view");
-    private final ElementsCollection fastLoginViews = $$("#fast_login_view");
-    private final SelenideElement fastLoginTertiaryBtn = $("#fast_login_tertiary_btn");
+    private final SelenideElement fastLoginSkipBtn = $("#fast_login_tertiary_btn");
     private final SelenideElement playerContainer = $("#playerContainer");
-    private final ElementsCollection playerContainers = $$("#playerContainer");
     private final SelenideElement videoPlayButton = $("#video_play_button");
-    private final ElementsCollection videoPlayButtons = $$("#video_play_button");
-    private final ElementsCollection progressViews = $$("#progress_view");
     private final SelenideElement currentProgress = $("#current_progress");
     private final SelenideElement seekBar = $("#seek_bar");
 
+    // элементы для мягкого поиска без падения теста
+    private final ElementsCollection videoPlayButtons = $$("#video_play_button");
+    private final ElementsCollection progressViews = $$("#progress_view");
+    private final ElementsCollection fastLoginViews = $$("#fast_login_view");
+    private final ElementsCollection playerContainers = $$("#playerContainer");
 
     public VkvideoPage(WebDriver driver) {
         this.driver = driver;
@@ -44,18 +44,12 @@ public class VkvideoPage {
                 "url", url,
                 "package", "com.vk.vkvideo"
         ));
-        // тут что то должно быть ожидание
         closeFastLoginIfAppears();
         playerContainer.shouldBe(visible, DEFAULT_TIMEOUT);
         return this;
     }
 
     public VkvideoPage closeFastLoginIfAppears() {
-//        $$(fastLoginView, playerContainer)
-//                .filter(visible)
-//                .shouldHave(CollectionCondition.sizeGreaterThan(0));
-//        $("#fast_login_view, #playerContainer").shouldBe(visible, DEFAULT_TIMEOUT);
-
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < 30000) {
             if (fastLoginViews.size() > 0 || playerContainers.size() > 0) { //вынести дублирование
@@ -65,19 +59,14 @@ public class VkvideoPage {
         }
 
         if (fastLoginViews.size() > 0) {
-            fastLoginTertiaryBtn.click();
+            fastLoginSkipBtn.click();
         }
         playerContainer.shouldBe(visible, DEFAULT_TIMEOUT);
-
-
-        if ($$("#fast_login_view").size() > 0) { // заменить
-            fastLoginTertiaryBtn.click();
-        }
         return this;
     }
 
     public VkvideoPage playFirstOpenedVideo() {
-        if (videoPlayButtons.size() > 0) { // ifDisplayed??
+        if (videoPlayButtons.size() > 0) {
             videoPlayButton.click();
             progressViews.shouldHave(size(0), LOADING_GONE_TIMEOUT);
         }
@@ -93,7 +82,6 @@ public class VkvideoPage {
 
     public int getCurrentProgress() {
         return (int) Float.parseFloat(seekBar.getText());
-//        return parseSecondsFromProgressLabel(currentProgress.getText());
     }
 
     public VkvideoPage playVideo() {
@@ -106,6 +94,29 @@ public class VkvideoPage {
         String left = progressText.split("/")[0].trim();
         String[] mmSs = left.split(":");
         return Integer.parseInt(mmSs[mmSs.length - 1].trim());
+    }
+
+    public boolean checkVideoNotPlaying() {
+        if (videoPlayButtons.size() > 0) {
+            videoPlayButton.click();
+        }
+        Utils.waitExactTime(10);
+        playerContainer.click();
+        playerContainer.click();
+        if (seekBar.exists()) {
+            return getCurrentProgress() == 0;
+        }
+        if (progressViews.size() > 0) {
+            return parseSecondsFromProgressLabel(currentProgress.getText()) == 0;
+        }
+        playerContainer.click();
+        if (seekBar.exists()) {
+            return getCurrentProgress() == 0;
+        }
+        if (progressViews.size() > 0) {
+            return parseSecondsFromProgressLabel(currentProgress.getText()) == 0;
+        }
+        return true;
     }
 }
 

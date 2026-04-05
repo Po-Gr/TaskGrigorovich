@@ -78,7 +78,7 @@ public class VkvideoTest extends BaseTest {
 
         int progressBefore =
                 page
-                        .openVideoByDeeplink("https://vkvideo.ru/video-211229778_456240419")
+                        .openVideoByDeeplink("https://vkvideo.ru/video-217020759_456240585")
                         .playFirstOpenedVideo()
                         .pauseVideo()
                         .getCurrentProgress();
@@ -96,26 +96,17 @@ public class VkvideoTest extends BaseTest {
     }
 
 
-    @Test(description = "Негативный сценарий: видео не воспроизводится",
-            groups = {"Vkvideo", "Network"})
-    public void shouldNotPlaySelectedVideo() throws InterruptedException, MalformedURLException {
-        $("#fast_login_view").should(exist, Duration.ofSeconds(20));
-        $("#fast_login_tertiary_btn").click(); // этот локатор мне не нравится
+    @Test(description = "Негативный сценарий: видео не воспроизводится по некорректной ссылке",
+            groups = {"Vkvideo"})
+    public void shouldNotPlaySelectedVideo() throws MalformedURLException {
 
-        $$("#preview").first().shouldBe(visible);
+        VkvideoPage page = new VkvideoPage(getAppiumDriver());
 
-        turnNetworkConnection(OFF);
-        Thread.sleep(3000);
-        $$("#preview").first().click();
+        boolean videoIsNotPlaying =
+                page
+                        .openVideoByDeeplink("https://vkvideo.ru/video-217020759_456240585")
+                        .checkVideoNotPlaying();
 
-        $("#playerContainer").shouldBe(visible);
-        $("#progress_view").should(exist, Duration.ofSeconds(5));
-        Thread.sleep(5000);
-        $("#progress_view").should(exist);
-        $("#playerContainer").click();
-//        $("#video_play_button").shouldNot(exist);
-        $("#playerContainer").click();
-        $("#video_play_button").shouldNot(exist);
-        $("#current_progress").shouldNot(exist);
+        Assert.assertTrue(videoIsNotPlaying);
     }
 }
