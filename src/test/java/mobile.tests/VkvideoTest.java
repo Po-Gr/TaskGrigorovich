@@ -26,7 +26,7 @@ public class VkvideoTest extends BaseTest {
 
         page.playVideo();
 
-        Utils.waitExactTime(10);
+        Utils.waitExactTime(6);
 
         int progressAfter =
                 page

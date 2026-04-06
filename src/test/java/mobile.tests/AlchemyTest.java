@@ -12,13 +12,13 @@ public class AlchemyTest extends BaseTest {
 
     @Test(description = "Получение подсказок за просмотр рекламы",
             groups = {"Alchemy"})
-    public void shouldGetHintsForAds() throws InterruptedException, MalformedURLException {
+    public void shouldGetHintsForAds() throws MalformedURLException {
 
         AlchemyPage page = new AlchemyPage(getAppiumDriver());
         int hintsBefore =
                 page
                         .startGame()
-                        .openYourHintsPage() // уязвимое место из за плохого локатора
+                        .openYourHintsPage()
                         .getCountOfCurrentHints();
 
         System.out.println(hintsBefore);

@@ -28,12 +28,10 @@ public class VkvideoPage {
     private final SelenideElement videoPlayButton = $("#video_play_button");
     private final SelenideElement currentProgress = $("#current_progress");
     private final SelenideElement seekBar = $("#seek_bar");
+    private final SelenideElement progressView = $("#progress_view");
 
-    // элементы для мягкого поиска без падения теста
     private final ElementsCollection videoPlayButtons = $$("#video_play_button");
     private final ElementsCollection progressViews = $$("#progress_view");
-    private final ElementsCollection fastLoginViews = $$("#fast_login_view");
-    private final ElementsCollection playerContainers = $$("#playerContainer");
 
     public VkvideoPage(WebDriver driver) {
         this.driver = driver;
@@ -52,13 +50,13 @@ public class VkvideoPage {
     public VkvideoPage closeFastLoginIfAppears() {
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < 30000) {
-            if (fastLoginViews.size() > 0 || playerContainers.size() > 0) { //вынести дублирование
+            if (fastLoginView.exists() || playerContainer.exists()) { //вынести дублирование
                 break;
             }
             Utils.waitExactTime(1);
         }
 
-        if (fastLoginViews.size() > 0) {
+        if (fastLoginView.exists()) {
             fastLoginSkipBtn.click();
         }
         playerContainer.shouldBe(visible, DEFAULT_TIMEOUT);
@@ -66,7 +64,7 @@ public class VkvideoPage {
     }
 
     public VkvideoPage playFirstOpenedVideo() {
-        if (videoPlayButtons.size() > 0) {
+        if (videoPlayButton.exists()) {
             videoPlayButton.click();
             progressViews.shouldHave(size(0), LOADING_GONE_TIMEOUT);
         }
@@ -97,7 +95,7 @@ public class VkvideoPage {
     }
 
     public boolean checkVideoNotPlaying() {
-        if (videoPlayButtons.size() > 0) {
+        if (videoPlayButton.exists()) {
             videoPlayButton.click();
         }
         Utils.waitExactTime(10);
@@ -106,14 +104,14 @@ public class VkvideoPage {
         if (seekBar.exists()) {
             return getCurrentProgress() == 0;
         }
-        if (progressViews.size() > 0) {
+        if (progressView.exists()) {
             return parseSecondsFromProgressLabel(currentProgress.getText()) == 0;
         }
         playerContainer.click();
         if (seekBar.exists()) {
             return getCurrentProgress() == 0;
         }
-        if (progressViews.size() > 0) {
+        if (progressView.exists()) {
             return parseSecondsFromProgressLabel(currentProgress.getText()) == 0;
         }
         return true;
