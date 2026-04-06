@@ -2,6 +2,7 @@ package mobile.pageObjects;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import io.appium.java_client.android.AndroidDriver;
 import mobile.Utils;
 import org.openqa.selenium.Rectangle;
@@ -43,11 +44,13 @@ public class AlchemyPage {
         this.driver = driver;
     }
 
+    @Step("Начать игру (Play)")
     public AlchemyPage startGame() {
         playButton.shouldBe(visible, Duration.ofSeconds(15)).click();
         return this;
     }
 
+    @Step("Открыть экран Your hints")
     public AlchemyPage openYourHintsPage() {
         hintsCountOnMainPage.shouldBe(visible).click();
         tapTopLeftCorner(hintsCountOnMainPage, 30);
@@ -59,6 +62,7 @@ public class AlchemyPage {
      * Тап по верхнему левому углу области элемента, чтобы обойти перекрытие центра
      * всплывающим окном
      */
+    @Step("Тап по верхнему левому углу элемента (inset={insetPx})")
     private void tapTopLeftCorner(SelenideElement element, int insetPx) {
         Rectangle r = element.getRect();
         int x = r.getX() + Math.min(insetPx, Math.max(1, r.getWidth() / 4));
@@ -73,10 +77,12 @@ public class AlchemyPage {
         logInfo("x = " + x + ", y = " + y);
     }
 
+    @Step("Получить текущее число подсказок")
     public int getCountOfCurrentHints() {
         return Integer.parseInt(hints2.getText());
     }
 
+    @Step("Получить подсказки за просмотр рекламы")
     public AlchemyPage getHintsForWatchingAds() {
         progressBar.shouldHave(size(0), Duration.ofSeconds(60)); // shouldNot не работает
         watchAdsButton.shouldBe(clickable, Duration.ofSeconds(10)).click(); // не происходит нажатие без ожидания пока лоадер пропадет
@@ -85,7 +91,8 @@ public class AlchemyPage {
         return this;
     }
 
-    public void closeAds2() {
+    @Step("Закрыть рекламу")
+    public void closeAds() {
 //        $("#m-playable-skip, #bigo_ad_btn_close").shouldBe(visible, Duration.ofSeconds(100)).click(); // к сожалению не сработало
 
         long startTime = System.currentTimeMillis();
@@ -119,7 +126,8 @@ public class AlchemyPage {
         }
     }
 
-    public void closeAds() {
+    @Step("Закрыть рекламу")
+    public void closeAds2() {
 //        $("#m-playable-skip, #bigo_ad_btn_close").shouldBe(visible, Duration.ofSeconds(100)).click(); // к сожалению не сработало
 
         Utils.anyExist(100, closeAdsButtons, runForwardAdsButtons);

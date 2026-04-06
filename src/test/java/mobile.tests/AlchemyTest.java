@@ -1,5 +1,6 @@
 package mobile.tests;
 
+import io.qameta.allure.Allure;
 import mobile.pageObjects.AlchemyPage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -29,6 +30,10 @@ public class AlchemyTest extends BaseTest {
                         .getCountOfCurrentHints();
 
         int hintsForAds = hintsAfter - hintsBefore;
-        Assert.assertEquals(hintsForAds, 2, "За просмотр рекламы было получено: " + hintsForAds + " подсказки (ожидали: 2)");
+        Allure.step("Проверка: за рекламу начислено 2 подсказки", () -> {
+            Allure.parameter("hintsForAds", String.valueOf(hintsForAds));
+            Assert.assertEquals(hintsForAds, 2);
+        });
+//        Assert.assertEquals(hintsForAds, 2, "За просмотр рекламы было получено: " + hintsForAds + " подсказки (ожидали: 2)");
     }
 }

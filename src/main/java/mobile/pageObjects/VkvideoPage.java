@@ -2,6 +2,7 @@ package mobile.pageObjects;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import mobile.Utils;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -37,6 +38,7 @@ public class VkvideoPage {
         this.driver = driver;
     }
 
+    @Step("Открыть видео по deeplink: {url}")
     public VkvideoPage openVideoByDeeplink(String url) {
         ((JavascriptExecutor) driver).executeScript("mobile: deepLink", Map.of(
                 "url", url,
@@ -47,6 +49,7 @@ public class VkvideoPage {
         return this;
     }
 
+    @Step("Закрыть быстрый логин, если показан")
     public VkvideoPage closeFastLoginIfAppears() {
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < 30000) {
@@ -63,6 +66,7 @@ public class VkvideoPage {
         return this;
     }
 
+    @Step("Запустить воспроизведение видео")
     public VkvideoPage playFirstOpenedVideo() {
         if (videoPlayButton.exists()) {
             videoPlayButton.click();
@@ -71,6 +75,7 @@ public class VkvideoPage {
         return this;
     }
 
+    @Step("Поставить видео на паузу (двойной тап по плееру)")
     public VkvideoPage pauseVideo() {
         playerContainer.click();
         playerContainer.click();
@@ -78,22 +83,26 @@ public class VkvideoPage {
         return this;
     }
 
+    @Step("Прочитать текущий прогресс воспроизведения")
     public int getCurrentProgress() {
         return (int) Float.parseFloat(seekBar.getText());
     }
 
+    @Step("Возобновить воспроизведение видео")
     public VkvideoPage playVideo() {
         videoPlayButton.click();
         videoPlayButtons.shouldHave(size(0), PLAY_HIDDEN_TIMEOUT);
         return this;
     }
 
+    @Step("Разобрать строку прогресса в секунды: {progressText}")
     private static int parseSecondsFromProgressLabel(String progressText) {
         String left = progressText.split("/")[0].trim();
         String[] mmSs = left.split(":");
         return Integer.parseInt(mmSs[mmSs.length - 1].trim());
     }
 
+    @Step("Проверить, что видео не воспроизводится")
     public boolean checkVideoNotPlaying() {
         if (videoPlayButton.exists()) {
             videoPlayButton.click();

@@ -1,5 +1,6 @@
 package mobile.tests;
 
+import io.qameta.allure.Allure;
 import mobile.Utils;
 import mobile.pageObjects.VkvideoPage;
 import org.testng.Assert;
@@ -33,7 +34,12 @@ public class VkvideoTest extends BaseTest {
                         .pauseVideo()
                         .getCurrentProgress();
 
-        Assert.assertTrue(progressAfter - progressBefore > 1);
+        Allure.step("Проверка: прогресс воспроизведения увеличился", () -> {
+            Allure.parameter("progressBefore", String.valueOf(progressBefore));
+            Allure.parameter("progressAfter", String.valueOf(progressAfter));
+            Assert.assertTrue(progressAfter - progressBefore > 1);
+        });
+//        Assert.assertTrue(progressAfter - progressBefore > 1);
     }
 
 
@@ -48,6 +54,10 @@ public class VkvideoTest extends BaseTest {
                         .openVideoByDeeplink("https://vkvideo.ru/video-217020759_4562405")
                         .checkVideoNotPlaying();
 
-        Assert.assertTrue(videoIsNotPlaying);
+        Allure.step("Проверка: видео не воспроизводится", () -> {
+            Allure.parameter("videoIsNotPlaying", String.valueOf(videoIsNotPlaying));
+            Assert.assertTrue(videoIsNotPlaying);
+        });
+//        Assert.assertTrue(videoIsNotPlaying);
     }
 }
