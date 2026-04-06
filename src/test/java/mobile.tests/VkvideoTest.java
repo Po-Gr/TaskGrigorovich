@@ -39,7 +39,6 @@ public class VkvideoTest extends BaseTest {
             Allure.parameter("progressAfter", String.valueOf(progressAfter));
             Assert.assertTrue(progressAfter - progressBefore > 1);
         });
-//        Assert.assertTrue(progressAfter - progressBefore > 1);
     }
 
 
@@ -58,6 +57,5 @@ public class VkvideoTest extends BaseTest {
             Allure.parameter("videoIsNotPlaying", String.valueOf(videoIsNotPlaying));
             Assert.assertTrue(videoIsNotPlaying);
         });
-//        Assert.assertTrue(videoIsNotPlaying);
     }
 }

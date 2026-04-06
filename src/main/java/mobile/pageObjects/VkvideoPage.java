@@ -26,6 +26,7 @@ public class VkvideoPage {
     private final SelenideElement fastLoginView = $("#fast_login_view");
     private final SelenideElement fastLoginSkipBtn = $("#fast_login_tertiary_btn");
     private final SelenideElement playerContainer = $("#playerContainer");
+    private final SelenideElement closeBtn = $("#close_btn_left");
     private final SelenideElement videoPlayButton = $("#video_play_button");
     private final SelenideElement currentProgress = $("#current_progress");
     private final SelenideElement seekBar = $("#seek_bar");
@@ -53,16 +54,18 @@ public class VkvideoPage {
     public VkvideoPage closeFastLoginIfAppears() {
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < 30000) {
-            if (fastLoginView.exists() || playerContainer.exists()) { //вынести дублирование
+            if (fastLoginView.exists() || playerContainer.exists() || closeBtn.exists()) {
                 break;
             }
             Utils.waitExactTime(1);
         }
-
-        if (fastLoginView.exists()) {
-            fastLoginSkipBtn.click();
+        if (closeBtn.exists()) { // шторка при первом запуске приложения
+            closeBtn.click();
         }
-        playerContainer.shouldBe(visible, DEFAULT_TIMEOUT);
+        if (fastLoginView.exists()) {
+            fastLoginSkipBtn.shouldBe(visible).click();
+        }
+        playerContainer.shouldBe(visible, Duration.ofSeconds(70));
         return this;
     }
 
@@ -113,15 +116,9 @@ public class VkvideoPage {
         if (seekBar.exists()) {
             return getCurrentProgress() == 0;
         }
-        if (progressView.exists()) {
-            return parseSecondsFromProgressLabel(currentProgress.getText()) == 0;
-        }
         playerContainer.click();
         if (seekBar.exists()) {
             return getCurrentProgress() == 0;
-        }
-        if (progressView.exists()) {
-            return parseSecondsFromProgressLabel(currentProgress.getText()) == 0;
         }
         return true;
     }
