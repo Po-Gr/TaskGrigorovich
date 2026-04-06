@@ -38,7 +38,7 @@ public class AlchemyPage {
     }
 
     public AlchemyPage startGame() {
-        playButton.shouldBe(visible).click();
+        playButton.shouldBe(visible, Duration.ofSeconds(15)).click();
         return this;
     }
 
