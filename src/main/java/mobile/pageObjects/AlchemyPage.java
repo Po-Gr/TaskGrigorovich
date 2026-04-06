@@ -23,7 +23,7 @@ public class AlchemyPage {
     private final WebDriver driver;
 
     private final SelenideElement playButton = $x("//*[contains(@text, 'Play')]");
-    private final SelenideElement hintsCountOnMainPage = $x("(//*[@text='4'])[1]/parent::*"); // явно указываю индекс тк предполагается что подсказки вверху экрана, а других опор в дереые не нашла
+    private final SelenideElement hintsCountOnMainPage = $x("(//*[@text='2'])[1]/parent::*"); // явно указываю индекс тк предполагается что подсказки вверху экрана, а других опор в дереые не нашла
     private final SelenideElement hintsCountOnMainPage2 = $x("//*[@text='2']"); // явно указываю индекс тк предполагается что подсказки вверху экрана, а других опор в дереые не нашла
 
     //    private final ElementsCollection progressBar = $$x("//*[contains(@text, 'For watching ads')]//android.widget.ProgressBar"); // неверный локатор
@@ -52,7 +52,7 @@ public class AlchemyPage {
 
     @Step("Открыть экран Your hints")
     public AlchemyPage openYourHintsPage() {
-        hintsCountOnMainPage.shouldBe(visible).click();
+        hintsCountOnMainPage.shouldBe(visible);
         tapTopLeftCorner(hintsCountOnMainPage, 30);
         hints2.shouldBe(visible, Duration.ofSeconds(20));
         return this;
